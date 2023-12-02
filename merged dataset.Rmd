@@ -1,0 +1,47 @@
+---
+title: "Merged Dataset"
+output: html_notebook
+author: "YutongMa"
+---
+
+```{r}
+# Set the working directory to the project directory
+setwd("/Users/biubiu/Desktop/23fall/stat380/ExtraCredit/")
+
+# Continue with your Shiny app code...
+
+gdp <- read.csv("gdp.csv")
+pop <- read.csv("population total.csv")
+imports <- read.csv("import value index.csv")
+poverty <- read.csv("Poverty headcount ratio.csv")
+
+all_data <- rbind(gdp, pop, imports, poverty)
+
+# Pivot longer the data
+all_data <- pivot_longer(
+  all_data,
+  cols = starts_with("X"), 
+  names_to = "Year",
+  values_to = "Value"
+)
+
+# Extracting the year from the 'Year' column
+all_data$Year <- as.numeric(gsub("X", "", all_data$Year))
+
+# Create a new column "Unit.Measure" based on Indicator.Name
+all_data$Unit.Measure <- NA
+
+# Map indicators to their respective units
+indicator_units <- c("GDP (current US$)" = "current US$",
+                     "Population, total" = "People",
+                     "Import value index (2015 = 100)" = "2015=100",
+                     "Poverty headcount ratio at national poverty lines (% of population)" = "% of population")
+
+# Update the "Unit.Measure" column
+all_data$Unit.Measure <- indicator_units[all_data$Indicator.Name]
+
+# write.csv(all_data, "/Users/biubiu/Desktop/23fall/stat380/credit/YutongMa_extracredit.csv", row.names = FALSE)
+all_data
+```
+
+
